@@ -8,10 +8,9 @@ dependencies:
   # https://anaconda.org/search
   - python=3.7.5
   - pip=20.1
-  - pandas==1.2.3
-  - python-pptx==0.6.21
-  - selenium==3.141.0
   - pip:
       # Define pip packages here.
       # https://pypi.org/
       - rpaframework==12.8.2 # https://rpaframework.org/releasenotes.html
+      - robotframework-browser==12.1.0
+      - python-pptx==0.6.21
