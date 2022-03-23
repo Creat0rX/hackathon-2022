@@ -23,7 +23,7 @@ COUNTRY_LIST = ["Country_link", "Rank", "Country", "Total_cases", "New_cases", "
 STATE_LIST = ["State_link", "Rank", "State", "Total_cases", "New_cases", "Total_deaths", "New_deaths",
                 "Total_recovered", "Active_cases", "Cases_per_mil", "Deaths_per_mil", "Total_tests",
                 "Tests_per_mil", "Population"]
-SLASH = os.sep
+SEP = os.sep
 driver = Selenium()
 conn = None
 main_table_countries = []
@@ -32,7 +32,7 @@ main_table_states = []
 ### Keywords ###
 def delete_powerpoint_if_exists():
     log_info_message("delete_powerpoint_if_exists")
-    for f in glob(f"output{SLASH}*.png"):
+    for f in glob(f"output{SEP}*.pptx"):
         os.remove(f)
 
 def open_browser_to_covid_website():
@@ -56,10 +56,10 @@ def screenshot_us_graphs_from_website():
     log_info_message("screenshot_us_graphs_from_website")
     for state in main_table_states[:10]:
         driver.go_to(state["State_link"])
-        driver.screenshot(f"{XPATH_GRAPH}[@class='tabbable-panel-cases']", f"output{SLASH}total_cases.png")
-        driver.screenshot(f"{XPATH_GRAPH}[@id='graph-cases-daily']", f"output{SLASH}daily_new_cases.png")
-        driver.screenshot(f"{XPATH_GRAPH}[@id='graph-active-cases-total']", f"output{SLASH}active_cases.png")
-        driver.screenshot(f"{XPATH_GRAPH}[@class='tabbable-panel-deaths']", f"output{SLASH}total_deaths.png")
+        driver.screenshot(f"{XPATH_GRAPH}[@class='tabbable-panel-cases']", f"output{SEP}total_cases.png")
+        driver.screenshot(f"{XPATH_GRAPH}[@id='graph-cases-daily']", f"output{SEP}daily_new_cases.png")
+        driver.screenshot(f"{XPATH_GRAPH}[@id='graph-active-cases-total']", f"output{SEP}active_cases.png")
+        driver.screenshot(f"{XPATH_GRAPH}[@class='tabbable-panel-deaths']", f"output{SEP}total_deaths.png")
         add_to_powerpoint(state["State"])
 
 def insert_values_safely(n, list_choice, link):
@@ -77,7 +77,7 @@ def insert_values_safely(n, list_choice, link):
 
 def connect_to_sql_database():
     log_info_message("connect_to_sql_database")
-    conn = sqlite.connect(f"output{SLASH}corona.db")
+    conn = sqlite.connect(f"output{SEP}corona.db")
     return conn
 
 def add_sql_tables(conn):
@@ -155,22 +155,19 @@ def disconnect_from_sql_database():
 
 def add_to_powerpoint(title):
     log_info_message("add_to_powerpoint")
-    try:
-        ppt = Presentation(f"output{SLASH}presentation-{str(datetime.now().date())}.pptx")
-    except:
-        ppt = Presentation()
+    ppt = Presentation()
     title_slide = ppt.slide_layouts[5]
     slide = ppt.slides.add_slide(title_slide)
     slide.shapes.title.text = f"USA - {title}"
-    slide.shapes.add_picture(f"output{SLASH}total_cases.png", left=Pt(50), top=Pt(100), height=Pt(200), width=Pt(300))
-    slide.shapes.add_picture(f"output{SLASH}active_cases.png", left=Pt(50), top=Pt(310), height=Pt(200), width=Pt(300))
-    slide.shapes.add_picture(f"output{SLASH}daily_new_cases.png", left=Pt(400), top=Pt(100), height=Pt(200), width=Pt(300))
-    slide.shapes.add_picture(f"output{SLASH}total_deaths.png", left=Pt(400), top=Pt(310), height=Pt(200), width=Pt(300))
-    ppt.save(f"output{SLASH}presentation-{str(datetime.now().date())}.pptx")
+    slide.shapes.add_picture(f"output{SEP}total_cases.png", left=Pt(50), top=Pt(100), height=Pt(200), width=Pt(300))
+    slide.shapes.add_picture(f"output{SEP}active_cases.png", left=Pt(50), top=Pt(310), height=Pt(200), width=Pt(300))
+    slide.shapes.add_picture(f"output{SEP}daily_new_cases.png", left=Pt(400), top=Pt(100), height=Pt(200), width=Pt(300))
+    slide.shapes.add_picture(f"output{SEP}total_deaths.png", left=Pt(400), top=Pt(310), height=Pt(200), width=Pt(300))
+    ppt.save(f"output{SEP}presentation-{str(datetime.now().date())}.pptx")
 
 def delete_screenshots():
     log_info_message("delete_screenshots")
-    for f in glob(f"output{SLASH}*.png"):
+    for f in glob(f"output{SEP}*.png"):
         os.remove(f)
 
 def get_credentials():
@@ -189,7 +186,7 @@ def send_email():
     subject = "Hackathon 2022"
     body = "Please see attachment for powerpoint presentation. The attached database uses sqlite and \
         so does not use login credentials."
-    attachments = [f"output{SLASH}presentation-{str(datetime.now().date())}.pptx", f"output{SLASH}corona.db"]
+    attachments = [f"output{SEP}presentation-{str(datetime.now().date())}.pptx", f"output{SEP}corona.db"]
     email.send_message(sender, recipients, subject, body, attachments)
 
 def close_browser():
